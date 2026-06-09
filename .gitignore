@@ -4,4 +4,4 @@
 *.test
 vendor/
 .idea/
-
+bin/

@@ -22,8 +22,16 @@ import (
 	"rc_lizhiqi/internal/store"
 )
 
+// Build metadata, injected via -ldflags at build time (see scripts/build.sh).
+var (
+	Version   = "dev"
+	Commit    = "none"
+	BuildTime = "unknown"
+)
+
 func main() {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})))
+	slog.Info("notification gateway", "version", Version, "commit", Commit, "built", BuildTime)
 
 	cfg := config.Defaults()
 	if v := os.Getenv("ADDR"); v != "" {

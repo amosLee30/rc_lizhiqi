@@ -14,10 +14,14 @@
 # 1) 运行（默认监听 :8080，使用 suppliers.json / secrets.json）
 SUPPLIERS_FILE=suppliers.json AD_TOKEN=ad-tok CRM_TOKEN=crm-tok go run ./cmd/server
 
-# 2) 一键端到端演示（拉起假上游 + 网关，提交→投递→查询→指标）
+# 2) 正式构建（gofmt/vet/test 检查 + 版本信息打入 -> bin/notify-server）
+bash scripts/build.sh
+GOOS=linux GOARCH=amd64 bash scripts/build.sh   # 交叉编译
+
+# 3) 一键端到端演示（拉起假上游 + 网关，提交→投递→查询→指标）
 bash scripts/smoke.sh
 
-# 3) 测试
+# 4) 测试
 go test ./...            # 全部单测 + 集成测试
 go test -race ./...      # 竞态检测
 ```
@@ -117,6 +121,7 @@ internal/
   observ/ model/ config/ metrics/ id/
 docs/               需求分析 / 方案决策记录 / 架构图
 openspec/           变更提案、规格、设计、任务（spec-driven）
+scripts/build.sh    正式构建（检查 + 版本注入 + 交叉编译）
 scripts/smoke.sh    端到端演示
 ```
 
