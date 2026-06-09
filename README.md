@@ -12,7 +12,10 @@
 
 ```bash
 # 1) 运行（默认监听 :8080，使用 suppliers.json / secrets.json）
+#    必须带 SUPPLIERS_FILE，否则供应商类型未注册、提交会返回 422 unknown type
 SUPPLIERS_FILE=suppliers.json AD_TOKEN=ad-tok CRM_TOKEN=crm-tok go run ./cmd/server
+# 或运行已构建的二进制
+SUPPLIERS_FILE=suppliers.json AD_TOKEN=ad-tok CRM_TOKEN=crm-tok ./bin/notify-server
 
 # 2) 正式构建（gofmt/vet/test 检查 + 版本信息打入 -> bin/notify-server）
 bash scripts/build.sh
@@ -28,19 +31,30 @@ go test -race ./...      # 竞态检测
 
 ### 试一下
 
+> 若本机设置了代理（`ALL_PROXY`/`http_proxy` 等），curl 访问本地服务会报 `(52) Empty reply from server`。
+> 下面示例统一加 `--noproxy '*'` 绕过代理访问 127.0.0.1。
+
 ```bash
 # 提交一条通知，拿到唯一追踪 ID
-curl -X POST localhost:8080/notifications -H 'Content-Type: application/json' -d '{
+curl --noproxy '*' -X POST http://127.0.0.1:8080/notifications -H 'Content-Type: application/json' -d '{
   "idempotency_key":"order-1","source_system":"billing",
   "type":"crm-contact","params":{"contactId":"42","status":"paid"}
 }'
 # => {"tracking_id":"019e...-...","status":"ACCEPTED","duplicate":false}
 
 # 凭追踪 ID 查询（粗三态）
-curl localhost:8080/notifications/<tracking_id>
+curl --noproxy '*' http://127.0.0.1:8080/notifications/<tracking_id>
 # 运维 detail 视图（含状态历史/重试/报错）
-curl -H 'Authorization: Bearer ops-secret' 'localhost:8080/notifications/<tracking_id>?detail=true'
+curl --noproxy '*' -H 'Authorization: Bearer ops-secret' 'http://127.0.0.1:8080/notifications/<tracking_id>?detail=true'
 ```
+
+### 常见问题
+
+| 现象 | 原因 | 解决 |
+|---|---|---|
+| `curl: (52) Empty reply from server` | curl 走了本机代理（`ALL_PROXY` 等）| 加 `--noproxy '*'`，或 `unset ALL_PROXY http_proxy https_proxy` |
+| `422 unknown notification type` | 启动时未加载供应商配置，类型未注册 | 启动命令带上 `SUPPLIERS_FILE=suppliers.json` |
+| `422 validation failed: ...` | 适配类必填参数缺失 | 按提示补齐 `params` 字段 |
 
 ---
 
