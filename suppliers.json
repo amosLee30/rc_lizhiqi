@@ -1,0 +1,5 @@
+[
+  { "type": "ad-register",   "endpoint": "http://localhost:9099/ad",   "method": "POST", "secret_ref": "env:AD_TOKEN",   "max_attempts": 5, "version": 1 },
+  { "type": "crm-contact",   "endpoint": "http://localhost:9099/crm",  "method": "POST", "secret_ref": "env:CRM_TOKEN",  "max_attempts": 5, "version": 1 },
+  { "type": "inventory-hmac", "endpoint": "http://localhost:9099/inv", "method": "POST", "secret_ref": "inventory-key", "max_attempts": 5, "version": 1 }
+]

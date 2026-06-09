@@ -1,0 +1,7 @@
+/notify.db
+/notify.db-*
+/server
+*.test
+vendor/
+.idea/
+

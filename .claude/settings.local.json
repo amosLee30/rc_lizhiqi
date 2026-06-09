@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(openspec status *)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('applyRequires:', d['applyRequires']\\); [print\\(a['id'], a['status']\\) for a in d['artifacts']]\")",
+      "Bash(openspec instructions *)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('TEMPLATE:'\\); print\\(d['template']\\); print\\('INSTRUCTION:'\\); print\\(d['instruction']\\)\")",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\('schema:',d['schemaName']\\);print\\('actionContext.mode:',d['actionContext']['mode']\\);print\\('allowedEditRoots:',d['actionContext']['allowedEditRoots']\\)\")",
+      "Bash(go version *)",
+      "Bash(go env *)",
+      "Bash(echo \"GOPATH=$\\(go env GOPATH\\) GOFLAGS=$\\(go env GOFLAGS\\) GOPROXY=$\\(go env GOPROXY\\)\")",
+      "Bash(timeout 15 go env GOPROXY)",
+      "Bash(go mod *)",
+      "Bash(go build *)",
+      "Bash(echo \"BUILD EXIT: $?\")",
+      "Bash(go vet *)",
+      "Bash(echo \"VET EXIT: $?\")",
+      "Bash(chmod +x scripts/smoke.sh)",
+      "Bash(bash scripts/smoke.sh)",
+      "Bash(grep -v *)",
+      "Bash(rm -f notify.db notify.db-shm notify.db-wal /tmp/gw)",
+      "Bash(gofmt -l ./cmd ./internal)",
+      "Bash(go test *)",
+      "Bash(gofmt -w internal/ingest/ingest.go)",
+      "Bash(sed -i '' 's/- \\\\[ \\\\]/- [x]/g' openspec/changes/notification-delivery-gateway/tasks.md)",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\('progress:',d['progress']\\)\")",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\('schema:',d['schemaName']\\);print\\('mode:',d['actionContext']['mode']\\);print\\('changesDir:',d['planningHome']['changesDir']\\);print\\('changeRoot:',d['changeRoot']\\);print\\('artifacts:'\\);[print\\(' ',a['id'],a['status']\\) for a in d['artifacts']];print\\('specs.existingOutputPaths:'\\);print\\(json.dumps\\(d['artifactPaths']['specs']['existingOutputPaths'],ensure_ascii=False,indent=2\\)\\)\")"
+    ]
+  }
+}
